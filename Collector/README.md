@@ -4,7 +4,7 @@ This part of the project describes the temprature sensor that has reads the
 water temperature and uploads the measured value to Thingspeak. It will also
 keep track of the remaining battery power.
 
-As the collector will run of batteries, the power consumption should be as low
+As the collector will run on batteries, the power consumption should be as low
 as possible. Between measurements, the device will go into deep sleep mode.
 
 ## Hardware
@@ -29,16 +29,17 @@ ESP.deepSleep(120 * 1000000);
 
 ```
 
+## Voltage regulator (ht7333)
+
+We want to power the collector from batteries. The ESP8266 wants a constant
+voltage of 3.2 volt and has been known to draw some current when powered on.
+
+
 ## Battery voltage (ADC)
 As we want to minimize the power consumption of the collector, but know when it
 is time to replace the batteries, we want to read the ADC. The ADC pin allows an
 input range between 0 and 1V. This results in a value between 0 and 1024,
 depending on the read voltage.
-
-```
-float val = (float)analogRead(A0);
-float voltage =  val * (( r1 + r2 ) / r2 ) / 1023;
-```
 
 As we are interested in the power that is left in the batteries (and not what is
   available after the ht7333), we need to measure Vin and use a voltage divider
@@ -47,6 +48,17 @@ As we are interested in the power that is left in the batteries (and not what is
 Depending the used batteries, the Vin might be higher or lower. In our case, we
 used 4 AA batteries, resulting in a Vmax of 4 * 1.5V = 6V.
 
+![Voltage divider](./adc1.png?raw=true)
+
+
+```
+float val = (float)analogRead(A0);
+float voltage =  val * (( r1 + r2 ) / r2 ) / 1023;
+```
+
+Even with high valued resistors, there will be a constant current flow over the
+resistors, which results in loosing power and draining the batteries. Therefor,
+we need to only power the voltage divider, when we want to measure data.
 
 
 ## Serial interface
