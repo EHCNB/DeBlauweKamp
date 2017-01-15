@@ -43,7 +43,7 @@ void setup(void){
   }
   Serial.println("");
   Serial.print("Connected to ");
-  Serial.println(ssid);
+  Serial.println(SSID);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
@@ -129,7 +129,7 @@ void loop() {
   digitalWrite(switchPin, LOW);
 
   // Construct the url
-  sprintf(url, "http://%s/update?key=%s&field%d=%s&field%d=%s", host, apikey, temperaturefield, temperatureString, voltagefield, voltageString);
+  sprintf(url, "http://%s/update?key=%s&field%d=%s&field%d=%s", host, APIKEY, 1, temperatureString, 2, voltageString);
   Serial.println(url);
 
   client.print(String("GET ") + url + " HTTP/1.1\r\n" +
