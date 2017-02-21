@@ -11,7 +11,7 @@
 #define ONE_WIRE_BUS 2 //GPIO2
 
 const char* host = "api.thingspeak.com";
-int sleeptime = 2; // sleeptime in minutes
+int sleeptime = 15; // sleeptime in minutes
 
 // De ADC pin
 const int switchPin = 12;
@@ -21,8 +21,8 @@ int temperature_field = 1;
 int adc_field = 2;
 
 // De resistors for the ADC
-float r1 = 100000;
-float r2 =  15000;
+float r1 = 55000;
+float r2 = 10000;
 
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature DS18B20(&oneWire);
@@ -113,8 +113,11 @@ void loop() {
   WiFiClient client;
   const int httpPort = 80;
   if (!client.connect(host, httpPort)) {
-    Serial.println("Thingspeak unreachable right now, going to deepsleep for 15 minutes");
-    ESP.deepSleep(15 * 60 * 1000000);
+    // lower the pullup for the ADC
+    digitalWrite(switchPin, LOW);
+
+    Serial.println("Thingspeak unreachable right now, going to deepsleep for sleeptime");
+    ESP.deepSleep(sleeptime * 60 * 1000000);
   }
 
   // request temperatuur
