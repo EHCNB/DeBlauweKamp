@@ -37,9 +37,18 @@ void setup(void){
   WiFi.begin(SSID, PASS);
 
   // Wait for connection
+  int i=150;
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
     Serial.print(".");
+    if ( i == 0 ) {
+      digitalWrite(switchPin, LOW);
+
+      Serial.println("No wifi found, going to deepsleep for sleeptime");
+      ESP.deepSleep(sleeptime * 60 * 1000000);
+
+    }
+    i--;
   }
   Serial.println("");
   Serial.print("Connected to ");
